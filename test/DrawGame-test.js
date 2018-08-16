@@ -1,3 +1,4 @@
+/* global it describe beforeEach afterEach */
 import sinon from 'sinon';
 import DrawGame from '../src/DrawGame.js';
 import Rect from '../src/Rect.js';
@@ -14,9 +15,43 @@ describe('DrawGame', function() {
         sandbox.restore();
     });
 
+    describe('drawInit', function() {
+        const ctx = 'ctx';
+        const rect = 'rect';
+
+        it('背景描画関数が呼ばれる', function() {
+            sandbox.stub(drawGame, 'drawTitle');
+            sandbox.stub(drawGame, 'drawStartButton');
+
+            const mock = sandbox.mock(drawGame);
+            mock.expects('drawBackground').withArgs(ctx, rect);
+            drawGame.drawInit(ctx, rect);
+            mock.verify();
+        });
+        it('タイトル描画関数が呼ばれる', function() {
+            sandbox.stub(drawGame, 'drawBackground');
+            sandbox.stub(drawGame, 'drawStartButton');
+
+            const mock = sandbox.mock(drawGame);
+            mock.expects('drawTitle').withArgs(ctx, rect);
+            drawGame.drawInit(ctx, rect);
+            mock.verify();
+        });
+        it('スタートボタン描画関数が呼ばれる', function() {
+            sandbox.stub(drawGame, 'drawBackground');
+            sandbox.stub(drawGame, 'drawTitle');
+
+            const mock = sandbox.mock(drawGame);
+            mock.expects('drawStartButton').withArgs(ctx, rect);
+            drawGame.drawInit(ctx, rect);
+            mock.verify();
+        });
+    });
+
     describe('drawBackground', function() {
         let ctx = null;
         const rect = new Rect(0, 0, 600, 600);
+
         beforeEach(() => {
             ctx = {
                 save: () => {},
@@ -29,31 +64,13 @@ describe('DrawGame', function() {
             sandbox.stub(drawGame, 'drawTitle');
             sandbox.stub(drawGame, 'drawStartButton');
 
-            const mock = sandbox.mock(ctx)
+            const mock = sandbox.mock(ctx);
             mock.expects('save').once();
             mock.expects('fillRect').withArgs(0, 0, 600, 600);
             mock.expects('restore').once();
 
             drawGame.drawBackground(ctx, rect);
 
-            mock.verify();
-        });
-
-        it('タイトル描画関数が呼ばれる', function() {
-            sandbox.stub(drawGame, 'drawStartButton');
-
-            const mock = sandbox.mock(drawGame);
-            mock.expects('drawTitle').withArgs(ctx, rect);
-            drawGame.drawBackground(ctx, rect);
-            mock.verify();
-        });
-
-        it('スタートボタン描画関数が呼ばれる', function() {
-            sandbox.stub(drawGame, 'drawTitle');
-
-            const mock = sandbox.mock(drawGame);
-            mock.expects('drawStartButton').withArgs(ctx, rect);
-            drawGame.drawBackground(ctx, rect);
             mock.verify();
         });
     });
@@ -104,6 +121,18 @@ describe('DrawGame', function() {
             mock.expects('fillText').withArgs('START');
             mock.expects('restore').once();
             drawGame.drawStartButton(ctx, rect);
+            mock.verify();
+        });
+    });
+
+    describe('drawStartPhone', function() {
+        const ctx = 'ctx';
+        const rect = 'rect';
+
+        it('背景色描画関数が呼ばれる', function() {
+            const mock = sandbox.mock(drawGame);
+            mock.expects('drawBackground').withArgs(ctx, rect);
+            drawGame.drawSmartPhone(ctx, rect);
             mock.verify();
         });
     });

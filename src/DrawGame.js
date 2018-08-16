@@ -1,32 +1,35 @@
-import Rect from './Rect.js';
-
 'use strict';
 
 const BACKGROUND_COLOR = '#d6ffd6';
 const TEXT_COLOR = '#088A29';
-const START_FONT = "40px 'ＭＳ ゴシック'";
-const BUTTON_FONT = "25px 'ＭＳ ゴシック'";
+const START_FONT = '40px "ＭＳ ゴシック"';
+const BUTTON_FONT = '25px "ＭＳ ゴシック"';
 const START_BUTTON_COLOR = 'orange';
 
 export default class DrawGame {
 
     constructor(parent) {
         this._parent = parent;
-    };
+    }
 
-    drawBackground(ctx, rect) {
-
-        ctx.save();
-
-        // 背景色描画
-        ctx.fillStyle = BACKGROUND_COLOR;
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+    // 初期画面描画
+    drawInit(ctx, rect) {
+        // 背景描画
+        this.drawBackground(ctx, rect);
 
         // タイトル描画
         this.drawTitle(ctx, rect);
 
         // スタートボタン描画
         this.drawStartButton(ctx, rect);
+    }
+
+    drawBackground(ctx, rect) {
+        ctx.save();
+
+        // 背景色描画
+        ctx.fillStyle = BACKGROUND_COLOR;
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
         ctx.restore();
     }
@@ -70,5 +73,10 @@ export default class DrawGame {
         ctx.fillText('START', edgeLength / 2, edgeLength * 2 / 3 + buttonRect.height / 2, buttonRect.width, buttonRect.height);
 
         ctx.restore();
+    }
+
+    drawSmartPhone(ctx, rect) {
+        // 背景色描画
+        this.drawBackground(ctx, rect);
     }
 }
