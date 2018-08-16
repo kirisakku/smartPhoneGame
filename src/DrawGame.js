@@ -1,8 +1,9 @@
+import Rect from './Rect.js';
+
 'use strict';
 
 const BACKGROUND_COLOR = '#d6ffd6';
 const TEXT_COLOR = '#088A29';
-const LENGTH = 400;
 const START_FONT = "40px 'ＭＳ ゴシック'";
 const BUTTON_FONT = "25px 'ＭＳ ゴシック'";
 const START_BUTTON_COLOR = 'orange';
@@ -13,23 +14,24 @@ export default class DrawGame {
         this._parent = parent;
     };
 
-    drawBackground(ctx) {
+    drawBackground(ctx, rect) {
+
         ctx.save();
 
         // 背景色描画
         ctx.fillStyle = BACKGROUND_COLOR;
-        ctx.fillRect(0, 0, LENGTH, LENGTH);
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
         // タイトル描画
-        this.drawTitle(ctx);
+        this.drawTitle(ctx, rect);
 
         // スタートボタン描画
-        this.drawStartButton(ctx);
+        this.drawStartButton(ctx, rect);
 
         ctx.restore();
     }
 
-    drawTitle(ctx) {
+    drawTitle(ctx, rect) {
         ctx.save();
 
         // フォントの設定
@@ -39,21 +41,21 @@ export default class DrawGame {
         // 文字位置調整
         ctx.textAlign = 'center';
         // 文字の描画
-        ctx.fillText('スマホロック', LENGTH / 2, LENGTH / 4, LENGTH);
-        ctx.fillText('解除ゲーム', LENGTH / 2, LENGTH / 2, LENGTH);
+        const edgeLength = rect.width;
+        ctx.fillText('スマホロック', edgeLength / 2, edgeLength / 4, edgeLength);
+        ctx.fillText('解除ゲーム', edgeLength / 2, edgeLength / 2, edgeLength);
 
         ctx.restore();
     }
 
-    drawStartButton(ctx) {
+    drawStartButton(ctx, rect) {
         ctx.save();
 
         // 下半分の領域の1/3の高さで描画する
-        const buttonHeight = LENGTH / 6;
         // 左右に画面の長さの1/3ずつのパディングを入れる
-        const buttonWidth = LENGTH / 3;
+        const buttonRect = this._parent.getStartButtonRect();
         ctx.fillStyle = START_BUTTON_COLOR;
-        ctx.fillRect(LENGTH / 3, LENGTH * 2 / 3, buttonWidth, buttonHeight);
+        ctx.fillRect(buttonRect.x, buttonRect.y, buttonRect.width, buttonRect.height);
 
         // フォントの設定
         ctx.font = BUTTON_FONT;
@@ -64,7 +66,8 @@ export default class DrawGame {
         ctx.textBaseline = 'middle';
         // 文字の描画
         // 中央揃えにするため、y座標をrectの高さの半分だけ下げる
-        ctx.fillText('START', LENGTH / 2, LENGTH * 2 / 3 + buttonHeight / 2, buttonWidth, buttonHeight);
+        const edgeLength = rect.width;
+        ctx.fillText('START', edgeLength / 2, edgeLength * 2 / 3 + buttonRect.height / 2, buttonRect.width, buttonRect.height);
 
         ctx.restore();
     }
