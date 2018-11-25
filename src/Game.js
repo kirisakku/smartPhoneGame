@@ -44,6 +44,30 @@ export default class Game {
         return new Rect(LENGTH / 3, LENGTH * 2 / 3, LENGTH / 3, LENGTH / 6);
     }
 
+    // 1〜9の全てのボタンの描画範囲となる矩形を返す
+    getNumButtonsRect() {
+        // 余白を1/10、ボタンの幅/高さを2/10ずつ割り当てる
+        const margin = LENGTH * 0.1;
+        const edgeLength = LENGTH * 0.2;
+
+        // 1行目
+        const button1 = new Rect(margin, margin, edgeLength, edgeLength);
+        const button2 = new Rect(button1.x + button1.width + margin, margin, edgeLength, edgeLength);
+        const button3 = new Rect(button2.x + button2.width + margin, margin, edgeLength, edgeLength);
+        // 2行目
+        const button4 = new Rect(button1.x, button1.y + button1.height + margin, edgeLength, edgeLength);
+        const button5 = new Rect(button2.x, button4.y, edgeLength, edgeLength);
+        const button6 = new Rect(button3.x, button4.y, edgeLength, edgeLength);
+        // 3行目
+        const button7 = new Rect(button1.x, button4.y + button4.height + margin, edgeLength, edgeLength);
+        const button8 = new Rect(button2.x, button7.y, edgeLength, edgeLength);
+        const button9 = new Rect(button3.x, button7.y, edgeLength, edgeLength);
+
+        return [
+            button1, button2, button3, button4, button5, button6, button7, button8, button9
+        ];
+    }
+
     mouseDown(event) {
         const game = this.thisArg;
 
@@ -55,4 +79,5 @@ export default class Game {
         // ヒットテストを実施
         game._hitTest.hitTest(ctx, point);
     }
-}
+}  
+

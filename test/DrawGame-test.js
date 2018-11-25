@@ -1,6 +1,8 @@
 /* global it describe beforeEach afterEach */
 import sinon from 'sinon';
+import {expect} from 'chai';
 import DrawGame from '../src/DrawGame.js';
+import Path from '../src/Path.js';
 import Rect from '../src/Rect.js';
 
 describe('DrawGame', function() {
@@ -125,13 +127,66 @@ describe('DrawGame', function() {
         });
     });
 
+    describe('drawNumButtons', function() {
+        let ctx = null;
+        // 1, 5, 9のみ検証
+        const rectList = [
+            new Rect(60, 60, 120, 120),
+            new Rect(240, 240, 120, 120),
+            new Rect(420, 420, 120, 120)
+        ];
+        const makeButtonPath = Path.makeButtonPath;
+
+        beforeEach(() => {
+            drawGame._parent = {
+                getNumButtonsRect: () => rectList
+            };
+            ctx = {
+                fill: () => {},
+                stroke: () => {},
+                fillText: () => {}
+            };
+            Path.makeButtonPath = () => {};
+        });
+        afterEach(() => {
+            Path.makeButtonPath = makeButtonPath;
+        });
+
+        it('正しい引数でパス作成関数が呼ばれる', function() {
+            const spy = sandbox.spy(Path, 'makeButtonPath');
+            drawGame.drawNumButtons(ctx);
+            expect(spy.callCount).to.eql(3);
+            expect(spy.getCall(0).calledWith(ctx, new Rect(60, 60, 120, 120))).to.eql(true);
+            expect(spy.getCall(1).calledWith(ctx, new Rect(240, 240, 120, 120))).to.eql(true);
+            expect(spy.getCall(2).calledWith(ctx, new Rect(420, 420, 120, 120))).to.eql(true);
+        });
+        it('正しい引数で文字列描画関数が呼ばれる', function() {
+            const spy = sandbox.spy(ctx, 'fillText');
+            drawGame.drawNumButtons(ctx);
+            expect(spy.callCount).to.eql(3);
+            expect(spy.getCall(0).calledWith('1', 120, 120)).to.eql(true);
+            expect(spy.getCall(1).calledWith('2', 300, 300)).to.eql(true);
+            expect(spy.getCall(2).calledWith('3', 480, 480)).to.eql(true);
+        });
+    });
+
     describe('drawStartPhone', function() {
         const ctx = 'ctx';
         const rect = 'rect';
 
         it('背景色描画関数が呼ばれる', function() {
+            sandbox.stub(drawGame, 'drawNumButtons');
+
             const mock = sandbox.mock(drawGame);
             mock.expects('drawBackground').withArgs(ctx, rect);
+            drawGame.drawSmartPhone(ctx, rect);
+            mock.verify();
+        });
+        it('ボタン描画関数が呼ばれる', function() {
+            sandbox.stub(drawGame, 'drawBackground');
+
+            const mock = sandbox.mock(drawGame);
+            mock.expects('drawNumButtons').withArgs(ctx);
             drawGame.drawSmartPhone(ctx, rect);
             mock.verify();
         });
