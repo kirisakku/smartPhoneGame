@@ -1,5 +1,6 @@
-'use strict';
+import Path from './Path.js';
 
+'use strict';
 const BACKGROUND_COLOR = '#d6ffd6';
 const TEXT_COLOR = '#088A29';
 const START_FONT = '40px "ＭＳ ゴシック"';
@@ -75,8 +76,37 @@ export default class DrawGame {
         ctx.restore();
     }
 
+    drawNumButtons(ctx) {
+        // ボタンの座標データ取得
+        const rectList = this._parent.getNumButtonsRect();
+        const length = rectList.length;
+
+        for (let i = 0; i < length; i++) {
+            const rect = rectList[i];
+
+            // ボタンのパスを作成
+            Path.makeButtonPath(ctx, rect);
+
+            // 色を付ける
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+            // 数字を書く
+            // $$$ ここを関数化しても良いかも
+            ctx.fillStyle = 'blue';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = BUTTON_FONT;
+            ctx.fillText(String(i + 1), rect.x + rect.width * 0.5, rect.y + rect.height * 0.5);
+            // 枠線を付ける
+            ctx.strokeStyle = 'darkgreen';
+            ctx.stroke();
+        }
+    }
+
     drawSmartPhone(ctx, rect) {
         // 背景色描画
         this.drawBackground(ctx, rect);
+        // ボタン描画
+        this.drawNumButtons(ctx);
     }
 }
